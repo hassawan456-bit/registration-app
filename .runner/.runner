@@ -1,0 +1,9 @@
+﻿{
+  "agentId": 2,
+  "agentName": "local-runner",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus21.actions.githubusercontent.com/tMnl3wWqXvkCVUXGAyJJhoeyOnQWwj3Px20udjUDySZfl4LQUb/",
+  "gitHubUrl": "https://github.com/hassawan456-bit/registration-app",
+  "workFolder": "_work"
+}

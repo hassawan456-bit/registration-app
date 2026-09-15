@@ -31,9 +31,9 @@ jobs:
         run: npm test --if-present
 
   cd:
-    name: Deploy
+    name: Deploy (Localhost)
     needs: ci
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
 
     steps:
@@ -47,16 +47,11 @@ jobs:
           cache: "npm"
 
       - name: Install production dependencies
+        shell: bash
         run: npm ci --omit=dev
 
-      - name: Deploy to Server via SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            cd /var/www/registration-app
-            git pull origin master
-            npm ci --omit=dev
-            pm2 restart registration-app || pm2 start server.js --name registration-app
+      - name: Deploy with PM2
+        shell: bash
+        run: |
+          npx pm2 restart registration-app || npx pm2 start server.js --name registration-app
+          npx pm2 save
