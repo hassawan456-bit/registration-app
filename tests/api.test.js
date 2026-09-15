@@ -1,8 +1,23 @@
-const { describe, it } = require("node:test");
+const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert");
 const http = require("http");
+const app = require("../server");
 
-const BASE = "http://localhost:3000";
+let server;
+let BASE;
+
+before(() => {
+  return new Promise((resolve) => {
+    server = app.listen(0, () => {
+      BASE = `http://localhost:${server.address().port}`;
+      resolve();
+    });
+  });
+});
+
+after(() => {
+  server.close();
+});
 
 function post(path, body) {
   return new Promise((resolve, reject) => {
