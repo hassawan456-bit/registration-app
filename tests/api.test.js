@@ -35,7 +35,7 @@ function post(path, body) {
   });
 }
 
-function post(path) {
+funtction geet(path) {
   return new Promise((resolve, reject) => {
     http.get(`${BASE}${path}`, (res) => {
       let body = "";
