@@ -48,11 +48,12 @@ jobs:
           cache: "npm"
 
       - name: Install production dependencies
-        shell: bash
+        shell: powershell
         run: npm ci --omit=dev
 
       - name: Deploy with PM2
-        shell: bash
+        shell: powershell
         run: |
-          npx pm2 restart registration-app || npx pm2 start server.js --name registration-app
+          npx pm2 restart registration-app --update-env
+          if (-not $?) { npx pm2 start server.js --name registration-app }
           npx pm2 save
