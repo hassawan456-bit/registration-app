@@ -29,13 +29,16 @@ after(() => {
   server.close();
 });
 
-function req(method, path, body) {
+function req(method, path, body, headers) {
   return new Promise((resolve, reject) => {
     const data = body ? JSON.stringify(body) : null;
     const options = {
       method,
       path,
-      headers: data ? { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(data) } : {},
+      headers: {
+        ...headers,
+        ...(data ? { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(data) } : {}),
+      },
     };
     const r = http.request(`${BASE}${path}`, options, (res) => {
       let out = "";
@@ -77,5 +80,22 @@ describe("Auth API", () => {
   it("should reject wrong login", async () => {
     const res = await req("POST", "/api/auth/login", { email: "nobody@test.com", password: "wrong" });
     assert.strictEqual(res.status, 401);
+  });
+
+  it("should list users with a valid token", async () => {
+    const email = `list${Date.now()}@test.com`;
+    const reg = await req("POST", "/api/auth/register", {
+      firstName: "List", lastName: "User", email, password: "123456",
+    });
+    assert.strictEqual(reg.status, 201);
+    assert.ok(reg.json.token);
+
+    const usersRes = await req("GET", "/api/users", null, {
+      Authorization: `Bearer ${reg.json.token}`,
+    });
+    assert.strictEqual(usersRes.status, 200);
+    assert.strictEqual(usersRes.json.success, true);
+    assert.ok(Array.isArray(usersRes.json.users));
+    assert.ok(usersRes.json.users.some((u) => u.email === email));
   });
 });
