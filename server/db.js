@@ -7,7 +7,13 @@ const db = {};
 if (process.env.DATABASE_URL) {
   const { Pool } = require("pg");
   db.type = "pg";
-  db.pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const url = new URL(process.env.DATABASE_URL);
+  url.searchParams.delete("channel_binding");
+  url.searchParams.delete("sslmode");
+  db.pool = new Pool({
+    connectionString: url.toString(),
+    ssl: { rejectUnauthorized: false },
+  });
   db.ready = db.pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
