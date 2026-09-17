@@ -1,7 +1,14 @@
 const { DatabaseSync } = require("node:sqlite");
+const os = require("os");
 const path = require("path");
+const fs = require("fs");
 
-const db = new DatabaseSync(path.join(__dirname, "registration.sqlite"));
+const dataDir = process.env.DB_DIR || path.join(os.homedir(), ".registration-app");
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const db = new DatabaseSync(path.join(dataDir, "registration.sqlite"));
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
