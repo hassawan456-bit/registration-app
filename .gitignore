@@ -1,2 +1,11 @@
 node_modules/
+client/node_modules/
+server/node_modules/
 .runner/
+server/.env
+client/dist/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+.env

@@ -19,17 +19,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "npm"
 
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm ci
 
-      - name: Lint
-        run: npm run lint --if-present
+      - name: Install server dependencies
+        run: npm ci --prefix server
 
-      - name: Test
-        run: npm test --if-present
+      - name: Install client dependencies
+        run: npm ci --prefix client
+
+      - name: Test (Backend API)
+        run: npm test
+
+      - name: Build Frontend
+        run: npm run build --prefix client
 
   cd:
     name: Deploy (Localhost)
@@ -44,16 +50,24 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "npm"
 
-      - name: Install production dependencies
+      - name: Install server dependencies
         shell: powershell
-        run: npm ci --omit=dev
+        run: npm ci --prefix server
+
+      - name: Install client dependencies
+        shell: powershell
+        run: npm ci --prefix client
+
+      - name: Build frontend
+        shell: powershell
+        run: npm run build --prefix client
 
       - name: Deploy with PM2
         shell: powershell
         run: |
           npx pm2 restart registration-app --update-env
-          if (-not $?) { npx pm2 start server.js --name registration-app }
+          if (-not $?) { npx pm2 start server/server.js --name registration-app }
           npx pm2 save
