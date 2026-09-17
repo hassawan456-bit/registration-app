@@ -3,9 +3,9 @@ const router = express.Router();
 const User = require("../models/User");
 const { protect } = require("../middleware/authMiddleware");
 
-router.get("/", protect, (req, res) => {
+router.get("/", protect, async (req, res) => {
   try {
-    const users = User.findAll().map((u) => {
+    const users = (await User.findAll()).map((u) => {
       const { password, ...safe } = u;
       return safe;
     });

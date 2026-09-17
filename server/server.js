@@ -4,9 +4,20 @@ const fs = require("fs");
 const path = require("path");
 require("dotenv").config();
 
+const db = require("./db");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const clientDist = path.join(__dirname, "..", "client", "dist");
+
+app.use(async (req, res, next) => {
+  try {
+    await db.ready;
+    next();
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Database not ready", error: err.message });
+  }
+});
 
 app.use(cors());
 app.use(express.json());
@@ -32,7 +43,7 @@ if (fs.existsSync(clientDist)) {
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
-    console.log("Database: SQLite (registration.sqlite)");
+    console.log(`Database: ${db.type}`);
   });
 }
 

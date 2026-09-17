@@ -15,13 +15,13 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ success: false, message: "Password must be at least 6 characters" });
     }
 
-    const exists = User.findByEmail(email.toLowerCase());
+    const exists = await User.findByEmail(email.toLowerCase());
     if (exists) {
       return res.status(409).json({ success: false, message: "Email already registered" });
     }
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = User.create({
+    const user = await User.create({
       firstName,
       lastName,
       email: email.toLowerCase(),
@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ success: false, message: "Email and password required" });
     }
 
-    const user = User.findByEmail(email.toLowerCase());
+    const user = await User.findByEmail(email.toLowerCase());
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ success: false, message: "Invalid email or password" });
     }
