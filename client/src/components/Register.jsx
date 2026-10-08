@@ -7,6 +7,7 @@ export default function Register({ onAuth, goLogin }) {
   const [form, setForm] = useState(empty);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPw, setShowPw] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -28,23 +29,50 @@ export default function Register({ onAuth, goLogin }) {
   const input = (label, name, type = "text", opts = {}) => (
     <div className="form-group">
       <label>{label}</label>
-      <input type={type} name={name} value={form[name]} onChange={handleChange} {...opts} />
+      <input
+        type={type}
+        name={name}
+        value={form[name]}
+        onChange={handleChange}
+        className={type === "date" ? "date-input" : ""}
+        {...opts}
+      />
     </div>
   );
 
   return (
     <div className="container auth-card">
-      <h1>Create Account</h1>
-      <p className="subtitle">Register with your details below</p>
+      <div className="card-head">
+        <div className="card-icon">🚀</div>
+        <h1>Create Account</h1>
+        <p className="subtitle">Register with your details below</p>
+      </div>
 
       <form onSubmit={handleSubmit}>
         <div className="row">
-          {input("First Name *", "firstName", "text", { required: true })}
-          {input("Last Name *", "lastName", "text", { required: true })}
+          {input("First Name *", "firstName", "text", { required: true, placeholder: "Ali" })}
+          {input("Last Name *", "lastName", "text", { required: true, placeholder: "Khan" })}
         </div>
         {input("Email Address *", "email", "email", { required: true, placeholder: "you@example.com" })}
         {input("Phone", "phone", "tel", { placeholder: "+92 300 1234567" })}
-        {input("Password *", "password", "password", { required: true, minLength: 6, placeholder: "Min 6 characters" })}
+
+        <div className="form-group">
+          <label>Password *</label>
+          <div className="pw-wrap">
+            <input
+              type={showPw ? "text" : "password"}
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              minLength={6}
+              placeholder="Min 6 characters"
+            />
+            <button type="button" className="pw-toggle" onClick={() => setShowPw((s) => !s)}>
+              {showPw ? "Hide" : "Show"}
+            </button>
+          </div>
+        </div>
 
         <div className="form-group">
           <label>Gender</label>
@@ -81,6 +109,7 @@ export default function Register({ onAuth, goLogin }) {
       <p className="switch">
         Already have an account? <a onClick={goLogin}>Login</a>
       </p>
+      <p className="foot-note">🔒 Your data is safe and never shared with anyone.</p>
     </div>
   );
 }

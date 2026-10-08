@@ -36,6 +36,8 @@ export default function App() {
         <Login onAuth={handleAuth} goRegister={() => setView("register")} />
       )}
       {view === "users" && <Users />}
+
+      <footer className="app-footer">Registration App · Built with React &amp; Express</footer>
     </div>
   );
 }
