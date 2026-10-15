@@ -31,9 +31,8 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                dir('server') {
-                    bat 'npm test'
-                }
+                // Root folder se test chalayen taake server modules access ho sakein
+                bat 'npm test'
             }
         }
     }
