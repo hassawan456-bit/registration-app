@@ -22,15 +22,18 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Install Dependencies') {
+        stage('Install Server Dependencies') {
             steps {
-                // Windows par npm ke liye bat use hota hai
-                bat 'npm install'
+                dir('server') {
+                    bat 'npm install'
+                }
             }
         }
         stage('Run Tests') {
             steps {
-                bat 'npm test'
+                dir('server') {
+                    bat 'npm test'
+                }
             }
         }
     }
