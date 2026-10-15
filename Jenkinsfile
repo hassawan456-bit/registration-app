@@ -1,14 +1,36 @@
+// pipeline {
+//     agent any
+//     stages {
+//         stage('Build') {
+//             steps {
+//                 echo 'Building the application...'
+//             }
+//         }
+//         stage('Test') {
+//             steps {
+//                 echo 'Running tests...'
+//             }
+//         }
+//     }
+// }
+
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Checkout Code') {
             steps {
-                echo 'Building the application...'
+                checkout scm
             }
         }
-        stage('Test') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Running tests...'
+                // Windows par npm ke liye bat use hota hai
+                bat 'npm install'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                bat 'npm test'
             }
         }
     }
