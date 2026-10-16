@@ -1,19 +1,3 @@
-// pipeline {
-//     agent any
-//     stages {
-//         stage('Build') {
-//             steps {
-//                 echo 'Building the application...'
-//             }
-//         }
-//         stage('Test') {
-//             steps {
-//                 echo 'Running tests...'
-//             }
-//         }
-//     }
-// }
-
 pipeline {
     agent any
     stages {
@@ -31,8 +15,18 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                // Root folder se test chalayen taake server modules access ho sakein
+                // Root folder ya server folder jahan bhi test run karna ho
                 bat 'npm test'
+            }
+        }
+        stage('Deploy to Vercel') {
+            steps {
+                withCredentials([string(credentialsId: 'vercel-token', variable: 'VERCEL_TOKEN')]) {
+                    dir('client') {
+                        // Yahan secret variable use hoga, token hardcode nahi karna
+                        bat "npx vercel --prod --token %VERCEL_TOKEN% --yes"
+                    }
+                }
             }
         }
     }
