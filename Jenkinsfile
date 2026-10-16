@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Deploy to Vercel') {
             steps {
-                withCredentials([string(credentialsId: 'vercel-token', variable: 'VERCEL_TOKEN')]) {
+                withCredentials([string(credentialsId: 'vercel-cicid-project', variable: 'VERCEL_TOKEN')]) {
                     dir('client') {
                         // Yahan secret variable use hoga, token hardcode nahi karna
                         bat "npx vercel --prod --token %vercel-cicid-project% --yes"
