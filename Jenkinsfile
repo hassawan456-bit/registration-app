@@ -19,14 +19,12 @@ pipeline {
                 bat 'npm test'
             }
         }
-        stage('Deploy to Vercel') {
-            steps {
-                withCredentials([string(credentialsId: 'vercel-cicid-project', variable: 'VERCEL_TOKEN')]) {
-                    dir('client') {
-                        // Yahan secret variable use hoga, token hardcode nahi karna
-                        bat "npx vercel --prod --token %vercel-cicid-project% --yes"
-                    }
-                }
+       stage('Deploy to Vercel') {
+    steps {
+        withCredentials([string(credentialsId: 'vercel-cicid-project', variable: 'VERCEL_TOKEN')]) {
+            dir('client') {
+                // Yahan variable ka naam VERCEL_TOKEN aayega jo upar define kiya hai
+                bat "npx vercel --prod --token %VERCEL_TOKEN% --yes"
             }
         }
     }
