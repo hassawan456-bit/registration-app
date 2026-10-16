@@ -9,7 +9,7 @@ pipeline {
         stage('Install Server Dependencies') {
             steps {
                 dir('server') {
-                    bat 'npm install'
+                    bat 'npm install'0
                 }
             }
         }
@@ -19,10 +19,14 @@ pipeline {
             }
         }
         stage('Deploy to Vercel') {
+    stage('Deploy to Vercel') {
     steps {
         withCredentials([string(credentialsId: 'cicd-project', variable: 'VERCEL_TOKEN')]) {
             dir('client') {
-                bat "npx vercel --prod --token %VERCEL_TOKEN% --yes"
+                // Pehle Vercel CLI ko globally latest version par update/install karein
+                bat "npm install -g vercel@latest"
+                // Phir token ke sath deploy karein
+                bat "vercel --prod --token %VERCEL_TOKEN% --yes"
             }
         }
     }
