@@ -24,7 +24,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'vercel-token', variable: 'VERCEL_TOKEN')]) {
                     dir('client') {
                         // Yahan secret variable use hoga, token hardcode nahi karna
-                        bat "npx vercel --prod --token %VERCEL_TOKEN% --yes"
+                        bat "npx vercel --prod --token %vercel-cicid-project% --yes"
                     }
                 }
             }
