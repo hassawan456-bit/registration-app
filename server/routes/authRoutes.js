@@ -6,13 +6,21 @@ const { generateToken } = require("../utils/generateToken");
 
 router.post("/register", async (req, res) => {
   try {
-    const { firstName, lastName, email, password, phone, gender, dob, city } = req.body;
+    const { firstName, lastName, fatherName, age, email, password, phone, gender, dob, city } = req.body;
 
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ success: false, message: "Required fields are missing" });
     }
     if (password.length < 6) {
       return res.status(400).json({ success: false, message: "Password must be at least 6 characters" });
+    }
+
+    let ageNum = null;
+    if (age !== undefined && age !== null && String(age).trim() !== "") {
+      ageNum = Number(age);
+      if (!Number.isInteger(ageNum) || ageNum < 1 || ageNum > 120) {
+        return res.status(400).json({ success: false, message: "Age must be a number between 1 and 120" });
+      }
     }
 
     const exists = await User.findByEmail(email.toLowerCase());
@@ -24,6 +32,8 @@ router.post("/register", async (req, res) => {
     const user = await User.create({
       firstName,
       lastName,
+      fatherName: fatherName || "",
+      age: ageNum,
       email: email.toLowerCase(),
       password: hashed,
       phone: phone || "",

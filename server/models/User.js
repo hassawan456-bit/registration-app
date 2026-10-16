@@ -4,19 +4,22 @@ const User = {
   async create(data) {
     if (db.type === "pg") {
       const { rows } = await db.pool.query(
-        `INSERT INTO users ("firstName","lastName",email,password,phone,gender,dob,city)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
-        [data.firstName, data.lastName, data.email, data.password, data.phone, data.gender, data.dob, data.city]
+        `INSERT INTO users ("firstName","lastName","fatherName",age,email,password,phone,gender,dob,city)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
+        [
+          data.firstName, data.lastName, data.fatherName, data.age, data.email,
+          data.password, data.phone, data.gender, data.dob, data.city,
+        ]
       );
       return rows[0];
     }
     const stmt = db.conn.prepare(`
-      INSERT INTO users (firstName, lastName, email, password, phone, gender, dob, city)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (firstName, lastName, fatherName, age, email, password, phone, gender, dob, city)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const result = stmt.run(
-      data.firstName, data.lastName, data.email, data.password,
-      data.phone, data.gender, data.dob, data.city
+      data.firstName, data.lastName, data.fatherName ?? "", data.age ?? null, data.email,
+      data.password, data.phone, data.gender, data.dob, data.city
     );
     return this.findById(result.lastInsertRowid);
   },

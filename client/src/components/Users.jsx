@@ -27,7 +27,7 @@ export default function Users() {
     const q = query.trim().toLowerCase();
     if (!q) return users;
     return users.filter((u) =>
-      [u.firstName, u.lastName, u.email, u.city, u.gender].filter(Boolean).join(" ").toLowerCase().includes(q)
+      [u.firstName, u.lastName, u.fatherName, u.email, u.city, u.gender].filter(Boolean).join(" ").toLowerCase().includes(q)
     );
   }, [users, query]);
 
@@ -86,6 +86,8 @@ export default function Users() {
                   <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <th>Father Name</th>
+                    <th>Age</th>
                     <th>Email</th>
                     <th>Gender</th>
                     <th>City</th>
@@ -107,6 +109,8 @@ export default function Users() {
                             {u.firstName} {u.lastName}
                           </span>
                         </td>
+                        <td className="cell-email">{u.fatherName || "—"}</td>
+                        <td>{u.age ?? "—"}</td>
                         <td className="cell-email">{u.email}</td>
                         <td>
                           <span className={`tag ${gender || "other"}`}>{u.gender || "—"}</span>

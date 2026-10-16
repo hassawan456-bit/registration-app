@@ -19,6 +19,8 @@ if (process.env.DATABASE_URL) {
       id SERIAL PRIMARY KEY,
       "firstName" TEXT NOT NULL,
       "lastName" TEXT NOT NULL,
+      "fatherName" TEXT DEFAULT '',
+      age INTEGER,
       email TEXT NOT NULL UNIQUE,
       password TEXT NOT NULL,
       phone TEXT DEFAULT '',
@@ -27,10 +29,14 @@ if (process.env.DATABASE_URL) {
       city TEXT DEFAULT '',
       "createdAt" TEXT DEFAULT (now()::text)
     )
-  `).then(() => "postgres").catch((err) => {
-    console.error("Postgres schema init failed:", err.message);
-    throw err;
-  });
+  `)
+    .then(() => db.pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS "fatherName" TEXT DEFAULT ''`))
+    .then(() => db.pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS age INTEGER`))
+    .then(() => "postgres")
+    .catch((err) => {
+      console.error("Postgres schema init failed:", err.message);
+      throw err;
+    });
 } else {
   const { DatabaseSync } = require("node:sqlite");
   db.type = "sqlite";
@@ -44,6 +50,8 @@ if (process.env.DATABASE_URL) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       firstName TEXT NOT NULL,
       lastName TEXT NOT NULL,
+      fatherName TEXT DEFAULT '',
+      age INTEGER,
       email TEXT NOT NULL UNIQUE,
       password TEXT NOT NULL,
       phone TEXT DEFAULT '',
@@ -53,6 +61,13 @@ if (process.env.DATABASE_URL) {
       createdAt TEXT DEFAULT (datetime('now'))
     )
   `);
+  for (const col of [`fatherName TEXT DEFAULT ''`, "age INTEGER"]) {
+    try {
+      db.conn.exec(`ALTER TABLE users ADD COLUMN ${col}`);
+    } catch {
+      // column already exists
+    }
+  }
   db.ready = Promise.resolve("sqlite");
 }
 
