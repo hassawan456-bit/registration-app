@@ -29,6 +29,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'cicd-project', variable: 'VERCEL_TOKEN')]) {
                     bat "npx vercel@latest link --yes --project cicd-project --token %VERCEL_TOKEN%"
+                    bat "npx vercel@latest pull --yes --environment=production --token %VERCEL_TOKEN%"
                     bat "npx vercel@latest build --prod --token %VERCEL_TOKEN%"
                     bat "npx vercel@latest deploy --prebuilt --prod --token %VERCEL_TOKEN%"
                 }
