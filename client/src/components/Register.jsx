@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { api } from "../api.js";
 
-const empty = { firstName: "", lastName: "", email: "", password: "", phone: "", gender: "Male", dob: "", city: "" };
+const empty = { firstName: "", lastName: "", fatherName: "", age: "", email: "", password: "", phone: "", gender: "Male", dob: "", city: "" };
 
 export default function Register({ onAuth, goLogin }) {
   const [form, setForm] = useState(empty);
@@ -52,6 +52,10 @@ export default function Register({ onAuth, goLogin }) {
         <div className="row">
           {input("First Name *", "firstName", "text", { required: true, placeholder: "Ali" })}
           {input("Last Name *", "lastName", "text", { required: true, placeholder: "Khan" })}
+        </div>
+        <div className="row">
+          {input("Father Name", "fatherName", "text", { placeholder: "Muhammad Khan" })}
+          {input("Age", "age", "number", { min: 1, max: 120, placeholder: "e.g. 25" })}
         </div>
         {input("Email Address *", "email", "email", { required: true, placeholder: "you@example.com" })}
         {input("Phone", "phone", "tel", { placeholder: "+92 300 1234567" })}
