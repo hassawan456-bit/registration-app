@@ -18,15 +18,15 @@ pipeline {
                 bat 'npm test'
             }
         }
-       stage('Deploy to Vercel') {
+      stage('Deploy to Vercel') {
     steps {
         withCredentials([string(credentialsId: 'cicd-project', variable: 'VERCEL_TOKEN')]) {
-            dir('client') {
-                // Global install ki zaroorat nahi, npx khud latest version handle kar lega
-                bat "npx vercel@latest --prod --token %VERCEL_TOKEN% --yes"
-            }
+            bat "npx vercel@latest link --yes --project cicd-project --token %VERCEL_TOKEN%"
+            bat "npx vercel@latest build --prod --token %VERCEL_TOKEN%"
+            bat "npx vercel@latest deploy --prebuilt --prod --token %VERCEL_TOKEN%"
         }
     }
+}
 }
 }
 }
